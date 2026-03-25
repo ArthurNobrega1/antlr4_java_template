@@ -9,37 +9,41 @@ statement
     | whileStatement
     | printStatement
     | inputStatement
+    | block
     ;
 
 varDeclaration : 'var' ID (ASSIGN expr)? SEMI ;
 
 assignment : ID ASSIGN expr SEMI ;
 
-ifStatement : 'if' LPAREN condition RPAREN LBRACE statement* RBRACE (ELSE LBRACE statement* RBRACE)? ;
+ifStatement : 'if' LPAREN condition RPAREN block (ELSE block)? ;
 
-whileStatement : 'while' LPAREN condition RPAREN LBRACE statement* RBRACE ;
+whileStatement : 'while' LPAREN condition RPAREN block ;
 
 printStatement : 'print' LPAREN (expr | STRING) RPAREN SEMI ;
 
 inputStatement : 'input' LPAREN ID RPAREN SEMI ;
 
-expr: <assoc=right> expr POW expr    # powerExpr
-    | expr (MUL | DIV) expr          # mulDivExpr
-    | expr (ADD | SUB) expr          # addSubExpr
-    | atom                           # atomExpr
+block : LBRACE statement* RBRACE ;
+
+expr: <assoc=right> expr POW expr     # powerExpr
+    | expr (MUL | DIV) expr           # mulDivExpr
+    | expr (ADD | SUB) expr           # addSubExpr
+    | atom                            # atomExpr
     ;
 
 condition
-    : condition (AND | OR) condition
-    | NOT condition
-    | expr (LT | GT | EQ | LE | GE) expr
-    | 'true'
-    | 'false'
-    | LPAREN condition RPAREN
+    : NOT condition                   # notCond
+    | condition AND condition         # andCond
+    | condition OR condition          # orCond
+    | expr (LT | GT | EQ | LE | GE) expr # comparisonCond
+    | 'true'                          # trueCond
+    | 'false'                         # falseCond
+    | LPAREN condition RPAREN         # parenCond
     ;
 
 atom
-    : INT
+    : NUMBER
     | ID
     | LPAREN expr RPAREN
     | 'input' LPAREN ID RPAREN
@@ -63,7 +67,7 @@ NOT    : 'not' ;
 ELSE   : 'else' ;
 
 ID     : [a-zA-Z_][a-zA-Z0-9_]* ;
-INT    : [0-9]+ ('.' [0-9]+)? ; 
+NUMBER : [0-9]+ ('.' [0-9]+)? ; 
 STRING : '"' ( '""' | ~('"'|'\r'|'\n') )* '"' ;
 
 LPAREN : '(' ;
