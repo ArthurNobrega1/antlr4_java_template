@@ -28,7 +28,7 @@ public class SemanticVisitor extends ExprBaseVisitor<Void> {
     public Void visitVarDeclaration(ExprParser.VarDeclarationContext ctx) {
         String name = ctx.ID().getText();
 
-        if (symbolTable.isDeclaredInCurrentScope(name)) {
+        if (symbolTable.isDeclared(name)) {
             System.err.println("Erro semântico: variável '" + name + "' já declarada neste escopo.");
             hasErrors = true;
         } else {

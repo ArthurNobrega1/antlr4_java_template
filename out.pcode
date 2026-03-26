@@ -10,6 +10,10 @@ fjp L1
 push $1
 push 3
 sto
+push $2
+push $1
+lod
+sto
 push $1
 lod
 push 4
@@ -20,34 +24,34 @@ lod
 out
 L2:
 push $1
-push $3
+push $2
 push 1
 sto
-push $4
+push $3
 push 3
 sto
 L4:
-push $4
+push $3
 lod
 push 0
 grt
 fjp L5
-push $3
-push $3
+push $2
+push $2
 lod
 push $1
 lod
 mul
 sto
-push $4
-push $4
+push $3
+push $3
 lod
 push 1
 sub
 sto
 ujp L4
 L5:
-push $3
+push $2
 lod
 sto
 push $0
@@ -61,10 +65,10 @@ div
 sto
 ujp L0
 L1:
-push $2
+push $1
 push 10
 sto
-push $2
+push $1
 lod
 out
 hlt
