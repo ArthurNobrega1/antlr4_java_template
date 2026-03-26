@@ -7,11 +7,16 @@ import java.util.Map;
 
 public class SymbolTable {
 
+    // Endereços persistentes — nunca removidos. Usado pelo CodeGeneratorVisitor.
+    private final Map<String, Integer> registry = new HashMap<>();
+
+    // Pilha de escopos — só para checagem semântica de visibilidade.
     private final Deque<Map<String, Integer>> scopes = new ArrayDeque<>();
+
     private int nextAddress = 0;
 
     public SymbolTable() {
-        pushScope(); // escopo global
+        scopes.push(new HashMap<>());
     }
 
     public void pushScope() {
@@ -19,25 +24,28 @@ public class SymbolTable {
     }
 
     public void popScope() {
-        scopes.pop();
+        if (scopes.size() > 1) {
+            scopes.pop();
+            // Não remove do registry — endereços continuam acessíveis.
+        }
     }
 
-    /** Declara no escopo atual (topo da pilha) */
     public void declare(String name) {
-        scopes.peek().put(name, nextAddress++);
+        int addr = nextAddress++;
+        scopes.peek().put(name, addr);
+        registry.put(name, addr);
     }
 
-    /** Reserva um endereço anônimo para temporários do compilador. */
     public int allocateTemp() {
         return nextAddress++;
     }
 
-    /** Verifica só no escopo atual — impede redeclaração no mesmo bloco */
+    /** Verifica redeclaração só no escopo atual. */
     public boolean isDeclaredInCurrentScope(String name) {
         return scopes.peek().containsKey(name);
     }
 
-    /** Busca em todos os escopos, do mais interno ao mais externo */
+    /** Verifica visibilidade em qualquer escopo ativo. */
     public boolean isDeclared(String name) {
         for (var scope : scopes) {
             if (scope.containsKey(name)) return true;
@@ -45,10 +53,10 @@ public class SymbolTable {
         return false;
     }
 
+    /** Busca no registry persistente — sempre funciona independente do escopo. */
     public int getAddress(String name) {
-        for (var scope : scopes) {
-            if (scope.containsKey(name)) return scope.get(name);
-        }
-        throw new RuntimeException("Variável não declarada: " + name);
+        Integer addr = registry.get(name);
+        if (addr == null) throw new RuntimeException("Variável não declarada: " + name);
+        return addr;
     }
 }

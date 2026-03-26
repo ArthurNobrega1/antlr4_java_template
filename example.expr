@@ -1,5 +1,17 @@
-var i = 0;
-while ((i < 10 and i == 3) or (i == 0 and not (i > 100))) {
-print(i);
-i = i + 1;
+var i = 4;
+
+while (i > 1) {
+    var j = 3;
+
+    if (j < 4) {
+        print(j);
+    }
+
+    j = j ^ 3;
+
+    print(i);
+    i = i / 2;
 }
+
+var w = 10
+print(w)

@@ -24,14 +24,6 @@ public class CodeGeneratorVisitor extends ExprBaseVisitor<Void> {
         out.println(instruction);
     }
 
-    @Override
-    public Void visitBlock(ExprParser.BlockContext ctx) {
-        symbolTable.pushScope();
-        visitChildren(ctx);
-        symbolTable.popScope();
-        return null;
-    }
-
     // ── program ───────────────────────────────────────────────────────────────
 
     @Override

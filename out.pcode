@@ -1,37 +1,70 @@
 push $0
-push 0
+push 4
 sto
 L0:
 push $0
 lod
-push 10
-let
-push $0
-lod
+push 1
+grt
+fjp L1
+push $1
 push 3
-equ
-and
-push $0
+sto
+push $1
+lod
+push 4
+let
+fjp L2
+push $1
+lod
+out
+L2:
+push $1
+push $3
+push 1
+sto
+push $4
+push 3
+sto
+L4:
+push $4
 lod
 push 0
-equ
-push $0
-lod
-push 100
 grt
-not
-and
-or
-fjp L1
+fjp L5
+push $3
+push $3
+lod
+push $1
+lod
+mul
+sto
+push $4
+push $4
+lod
+push 1
+sub
+sto
+ujp L4
+L5:
+push $3
+lod
+sto
 push $0
 lod
 out
 push $0
 push $0
 lod
-push 1
-add
+push 2
+div
 sto
 ujp L0
 L1:
+push $2
+push 10
+sto
+push $2
+lod
+out
 hlt
